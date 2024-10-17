@@ -15,16 +15,12 @@ export default function ProductDetails() {
 
     useEffect(() => {
         if (id) {
-            productStore.loadProduct(id).then((product) => {
-                setProduct(product); console.log(`product loaded ${product}`);
-                productStore.loadComments(id).then(() => console.log(`Comments loaded ${productStore.loading}`));
-            });
-            
+            productStore.loadProduct(id).then((prod) => { setProduct(prod); console.log(`product loaded ${prod}`) });
+            productStore.loadComments(id).then(() => console.log(`Comments loaded ${productStore.loading}`));
         }
-    },[id])
+    }, [id])
 
-    if (productStore.loading||!product) return <LoadingComponent />;
-
+    if (!product) return (<LoadingComponent />);
 
     return (
         <>
@@ -102,4 +98,5 @@ export default function ProductDetails() {
             </Box>
         </>
     )
+
 }

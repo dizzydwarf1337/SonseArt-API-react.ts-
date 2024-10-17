@@ -11,47 +11,50 @@ export default class ProductStore {
     
     loading: boolean = false;
 
-    setLoading = (state: boolean) => {
+    private setLoading = (state: boolean) => {
         this.loading = state;
     }
 
-    setProducts(products: Product[]) {
+    private setProducts(products: Product[]) {
         console.log("Setting products:", products);
         this.products = products; 
     }
+
     loadProducts = async () => {
+        this.setLoading(true);
         try {
-            this.setLoading(true);
-            const response = await agent.Products.productList();
-            runInAction(() => {
-                this.setProducts(response);
-                this.setLoading(false);
-            });
-        } catch (error) {
-            runInAction(() => {
-                console.error("Error loading products:", error);
-                this.setLoading(false);
-            });
+            this.setProducts(await agent.Products.productList());
+            this.setLoading(false);
+        }
+        catch {
+            console.error("Error loading products",Error);
+            this.setLoading(false);
         }
     }
-    async loadProduct(id: string) {
+
+    loadProduct = async (id: string) => {
         this.setLoading(true);
-        if (this.products.length == 0) {
-            var product = (await agent.Products.details(id)).data;
-            this.setLoading(false);   
-            return product;
-        }
-        else if(!this.products.find(x=>x.id===id)) {
-            var product = (await agent.Products.details(id)).data;
+        try {
+            if (!this.products.find(x => x.id === id)) {
+                const product = await agent.Products.details(id);
+                runInAction(() => {
+                    this.setLoading(false);
+                })
+                
+                return product;
+            }
             runInAction(() => {
-                this.products.push(product);
                 this.setLoading(false);
             })
-            return product;
+            return this.products.find(x => x.id === id);
+            
         }
-        this.setLoading(false);
-        return this.products.find(x => x.id === id);
+        catch {
+            console.log("Error loading product");
+            this.setLoading(true);
+        }
     }
+
     async createProduct(product: Product) {
         this.setLoading(true);
         await agent.Products.create(product);

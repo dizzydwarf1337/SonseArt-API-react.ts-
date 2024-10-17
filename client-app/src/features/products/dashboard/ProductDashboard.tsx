@@ -16,17 +16,15 @@ export default observer (function  ProductDashboard() {
         loadProducts();
     }, [products.length, loadProducts]);
 
+        return (
+            <Grid2 container sx={{ p: "5px", m: "5px", justifyContent: "space-evenly" }} spacing={1.5}>
+                {products.map((product: Product) => (
+                    <Grid item key={product.id}>
+                        <ProductItem product={product} />
+                    </Grid>
+                ))}
+            </Grid2>
 
 
-    return (
-        <Grid2 container sx={{ p: "5px", m: "5px", justifyContent: "space-evenly" }} spacing={1.5}>
-            {products.map((product: Product) => (
-                <Grid item  key={product.id}>
-                    <ProductItem product={product} />
-                </Grid>
-            ))}
-        </Grid2>
-
-
-    )
+        )
 })
