@@ -15,12 +15,24 @@ export default function ProductDetails() {
 
     useEffect(() => {
         if (id) {
-            productStore.loadProduct(id).then((prod) => { setProduct(prod); console.log(`product loaded ${prod}`) });
-            productStore.loadComments(id).then(() => console.log(`Comments loaded ${productStore.loading}`));
+            try {
+                if (productStore.products.length == 0) {
+                    productStore.loadProduct(id).then(() => { setProduct(productStore.products.find(x => x.id === id)); })
+                    console.log("Product loaded from API");
+                }
+                else if (productStore.products.find(x => x.id === id)) {
+                    setProduct(productStore.products.find(x => x.id === id));
+                    console.log("Product found in store");
+                }
+                else console.log("Product Not Found");
+            }
+            catch {
+                console.error("Error while setting product");
+            }
         }
     }, [id])
 
-    if (!product) return (<LoadingComponent />);
+    if (productStore.loading || !product) return (<LoadingComponent />);
 
     return (
         <>

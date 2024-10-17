@@ -8,17 +8,18 @@ export default class ProductStore {
     }
 
     products: Product[] = []; 
-    
+
+    private setProducts(products: Product[]) {
+        this.products = products;
+    }
+
     loading: boolean = false;
 
     private setLoading = (state: boolean) => {
         this.loading = state;
     }
 
-    private setProducts(products: Product[]) {
-        console.log("Setting products:", products);
-        this.products = products; 
-    }
+    
 
     loadProducts = async () => {
         this.setLoading(true);
@@ -34,44 +35,62 @@ export default class ProductStore {
 
     loadProduct = async (id: string) => {
         this.setLoading(true);
-        try {
-            if (!this.products.find(x => x.id === id)) {
-                const product = await agent.Products.details(id);
-                runInAction(() => {
-                    this.setLoading(false);
-                })
-                
-                return product;
-            }
-            runInAction(() => {
+        try {    
+            const product = await agent.Products.details(id);
+            runInAction(() => { 
                 this.setLoading(false);
+                this.setProducts([...this.products.filter(x=>x.id!==id), product])
             })
-            return this.products.find(x => x.id === id);
-            
-        }
+        }     
         catch {
             console.log("Error loading product");
             this.setLoading(true);
         }
     }
 
-    async createProduct(product: Product) {
+    createProduct = async (product: Product) => {
         this.setLoading(true);
-        await agent.Products.create(product);
-        this.products.push(product);
-        this.setLoading(false);
+        try {
+            await agent.Products.create(product);
+            runInAction(() => { 
+                this.setProducts([...this.products, product]);
+                this.setLoading(false);
+            })
+        }
+        catch {
+            console.error("Error creating product", Error);
+            this.setLoading(false);
+        }
     }
-    async updateProduct(product: Product) {
+
+    updateProduct = async (product: Product) => {
         this.setLoading(true);
-        await agent.Products.update(product);
-        this.products = [...this.products.filter(x => x.id !== product.id), product];
-        this.setLoading(false);
+        try {
+            await agent.Products.update(product);
+            runInAction(() => {
+            this.setProducts([...this.products.filter(x => x.id !== product.id), product]);
+            this.setLoading(true);
+            })
+        }
+        catch {
+            console.error("Error updating product", Error);
+            this.setLoading(false);
+        }
     }
-    async deleteProduct(id: string) {
+
+    deleteProduct= async (id: string) => {
         this.setLoading(true);
-        await agent.Products.delete(id);
-        this.products = [...this.products.filter(x => x.id !== id)];
-        this.setLoading(false);
+        try {
+            await agent.Products.delete(id);
+            runInAction(() => {
+                this.setProducts([...this.products.filter(x => x.id !== id)]);
+                this.setLoading(false);
+            })
+        }
+        catch {
+            console.error("Error deleting product", Error);
+            this.setLoading(false);
+        }
     }
     async uploadImage(id: string, file: FormData) {
         this.setLoading(true);
