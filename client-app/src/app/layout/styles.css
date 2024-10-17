@@ -1,0 +1,12 @@
+a {
+    text-decoration: none;
+    color: #D4D8C5;
+}
+
+body {
+    background-color: #E9EBE1;
+}
+.MuiAppBar-root.navBar {
+    background-color: #727548;
+    height: 60px;
+}
