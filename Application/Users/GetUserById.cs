@@ -10,14 +10,14 @@ namespace Application.Users
 {
     public class GetUserById
     {
-        public class Query : IRequest<User>
+        public class Query : IRequest<UserDto>
         {
             public Guid Id { get; set; }
         }
-        public class Handler : IRequestHandler<Query, User>
+        public class Handler : IRequestHandler<Query, UserDto>
         {
             private readonly IUserRepository _userRepo;
-            public Task<User> Handle(Query request, CancellationToken cancellationToken)
+            public Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 return _userRepo.GetUser(request.Id);
             }

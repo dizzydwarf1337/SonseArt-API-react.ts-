@@ -9,12 +9,12 @@ namespace API.Controllers
     public class UserController : BaseAPIController
     {
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<UserDto>> GetUser(Guid id)
         {
             return await Mediator.Send(new GetUserById.Query { Id = id });
         }
         [HttpGet("{email}")]
-        public async Task<ActionResult<User>> GetUser(string email)
+        public async Task<ActionResult<UserDto>> GetUser(string email)
         {
             return await Mediator.Send(new GetUserByEmail.Query { Email = email });
         }

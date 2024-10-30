@@ -16,26 +16,29 @@ namespace Persistence.Repositories
     {
         private readonly UserManager<User> _userManager;
         private readonly ApplicationContext _context;
-        private readonly IUserStore<User> _userStore;
-        private readonly IUserEmailStore<User> _emailStore;
 
-        public UserRepo(UserManager<User> userManager, ApplicationContext context, IUserStore<User> userStore, IUserEmailStore<User> emailStore)
+        public UserRepo(UserManager<User> userManager, ApplicationContext context)
         {
             _userManager = userManager;
             _context = context;
-            _userStore = userStore;
-            _emailStore = emailStore;
 
         }
-        public async Task CreateUser(User user, string password)
+        public async Task CreateUser(UserDto user, string password)
         {
-            await _userStore.SetUserNameAsync(user, user.Email, CancellationToken.None);
-            await _userStore.SetNormalizedUserNameAsync(user, user.Email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, user.Email, CancellationToken.None);
-            await _emailStore.SetNormalizedEmailAsync(user, user.Email, CancellationToken.None);
-            await _emailStore.SetEmailConfirmedAsync(user, false, CancellationToken.None);
-            await _userManager.CreateAsync(user, password);
-            await _context.Users.AddAsync(user);
+            var User = new User
+            {
+                City = user.City,
+                Street = user.Street,
+                ZipCode = user.ZipCode,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                NormalizedEmail = user.Email.ToUpper(),
+                NormalizedUserName = user.Email.ToUpper(),
+                UserName = user.Email
+            };
+            await _userManager.CreateAsync(User, password);
+            await _context.Users.AddAsync(User);
 
         }
 
@@ -49,17 +52,19 @@ namespace Persistence.Repositories
             }
         }
 
-        public async Task<User> GetUser(Guid id)
+        public async Task<UserDto> GetUser(Guid id)
         {
-            return await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
+            return new UserDto(user);
         }
 
-        public async Task<User> GetUser(string email)
+        public async Task<UserDto> GetUser(string email)
         {
-            return (await _context.Users.FirstOrDefaultAsync(x => x.Email == email));
+           var user= (await _context.Users.FirstOrDefaultAsync(x => x.Email == email));
+           return new UserDto(user);
         }
 
-        public async Task UpdateUser(User user, Guid id)
+        public async Task UpdateUser(UserDto user, Guid id)
         {
             var User = await _context.Users.FindAsync(id);
             User.Street = user.Street;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dtos
+namespace Persistence.Identity
 {
     public class UserDto
     {
@@ -17,5 +17,17 @@ namespace Application.Dtos
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? Password { get; set; }
+        public UserDto(){}
+        public UserDto(User user)
+        {
+            Id= user.Id;
+            Email = user.Email;
+            City = user.City;
+            Street = user.Street;
+            ZipCode = user.ZipCode;
+            House = user.House;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+        }
     }
 }

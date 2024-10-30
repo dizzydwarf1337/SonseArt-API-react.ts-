@@ -21,18 +21,7 @@ namespace Application.Users
             private readonly IUserRepository _userRepo;
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = new User
-                {
-                    Id = request.Id,
-                    Email = request.User.Email,
-                    FirstName = request.User.FirstName,
-                    LastName = request.User.LastName,
-                    City = request.User.City,
-                    ZipCode = request.User.ZipCode,
-                    Street = request.User.Street,
-                    House = request.User.House
-                };
-                return _userRepo.UpdateUser(user, request.Id);
+                return _userRepo.UpdateUser(request.User, request.Id);
             }
         }
     }
