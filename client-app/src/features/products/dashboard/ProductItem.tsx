@@ -12,7 +12,9 @@ interface Props {
 export default function ProductItem({ product }: Props) {
     const navigate = useNavigate();
     const { productStore } = useStore();
-
+    const user = useStore().userStore.getUser();
+    const role = user ? user.role : null;
+    const isAdmin = role === "Admin";
     async function handleDelete(){
         await productStore.deleteProduct(product.id);
     }
@@ -33,6 +35,7 @@ export default function ProductItem({ product }: Props) {
                     title={product.name}
                     titleTypographyProps={{ fontSize: "25px", height: "5px", color: "white", width: "300px" }}
                     action={
+                        isAdmin && (
                         <IconButton onClick={(e) => { e.stopPropagation(); handleDelete() }} sx={{
                             boxShadow: "0px 0px 10px 5px red",
                             zIndex: "200",
@@ -40,9 +43,9 @@ export default function ProductItem({ product }: Props) {
                             top: "13px",
                             right: "13px"
                         }}>
-                            <ClearIcon sx={{color:"red"}}/>
+                            <ClearIcon sx={{ color: "red" }} />
                         </IconButton>
-                    }
+                        )}
                 />
                 <CardContent sx={{ position: "relative", top: "220px", color: "white" }} >
                     <Typography component="p" variant="subtitle2">{product.price}</Typography>

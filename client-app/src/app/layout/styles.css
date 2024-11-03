@@ -10,3 +10,9 @@ body {
     background-color: #727548;
     height: 60px;
 }
+.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButton-colorPrimary.MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButton-colorPrimary.navLink:hover {
+    background-color: #E9EBE1;
+    color: #727548;
+    box-shadow:none;
+    transition: 0.7s;
+}

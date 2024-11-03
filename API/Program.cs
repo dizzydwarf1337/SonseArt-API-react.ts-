@@ -38,6 +38,9 @@ builder.Services.AddAuthorization(opt =>
     opt.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
     opt.AddPolicy("User", policy => policy.RequireRole("User"));
 });
+
+
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = jwtSettings["Key"];
 
@@ -68,12 +71,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseCors("CorsPolicy");
-app.UseAuthentication();
-app.UseAuthorization();
+
 
 using (var scope = app.Services.CreateScope())
 {

@@ -9,7 +9,7 @@ namespace Persistence.Identity
     public interface IUserRepository
     {
         public Task<UserDto> GetUser(Guid id);
-        public Task<UserDto> GetUser(string email);
+        public Task<UserDto> GetUserByEmail(string email);
         public Task<string> CreateUser(UserDto user);
         public Task UpdateUser(UserDto user, Guid id);
         public Task DeleteUser(Guid id);

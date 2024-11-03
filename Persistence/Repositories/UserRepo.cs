@@ -65,10 +65,14 @@ namespace Persistence.Repositories
             return new UserDto(user);
         }
 
-        public async Task<UserDto> GetUser(string email)
+        public async Task<UserDto> GetUserByEmail(string email )
         {
            var user= (await _context.Users.FirstOrDefaultAsync(x => x.Email == email));
-           return new UserDto(user);
+           var userDto = new UserDto(user);
+           var userRole = await _context.UserRoles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+           var role = await _context.Roles.FindAsync(userRole.RoleId);
+           userDto.Role = role?.Name;
+           return userDto;
         }
 
         public async Task UpdateUser(UserDto user, Guid id)

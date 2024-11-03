@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Dtos;
+using MediatR;
 using Persistence.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,18 @@ namespace Application.Users
     {
         public class Query : IRequest<UserDto>
         {
-            public string Email { get; set; }
+            public EmailRequest email { get; set; }
         }
         public class Handler : IRequestHandler<Query, UserDto>
         {
-            private readonly IUserRepository _userRepo;
+            private readonly IUserRepository _userRepository;
+            public Handler(IUserRepository userRepository)
+            {
+                _userRepository = userRepository;
+            }
             public Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                return _userRepo.GetUser(request.Email);
+                return _userRepository.GetUserByEmail(request.email.Email);
             }
         }
     }

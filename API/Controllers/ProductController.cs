@@ -8,7 +8,6 @@ namespace API.Controllers
 {
     public class ProductController : BaseAPIController
     {
-        
         [HttpGet]
         public async Task<IEnumerable<Product>> GetProducts()
         {
@@ -24,16 +23,19 @@ namespace API.Controllers
         {
             await Mediator.Send(new Create.Command { product = product });
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task DeleteProduct (Guid Id)
         {
             await Mediator.Send(new Delete.Command { Id = Id });
         }
+        [Authorize(Roles="Admin")]
         [HttpPut("{id}")]
         public async Task UpdateProduct(Guid id, Product product)
         {
             await Mediator.Send(new ProductUpdate.Command { Id = id, product = product });
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("{id}")]
         public async Task UploadImage(Guid id, IFormFile? imageFile)
         {

@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Identity;
@@ -13,10 +14,10 @@ namespace API.Controllers
         {
             return await Mediator.Send(new GetUserById.Query { Id = id });
         }
-        [HttpGet("{email}")]
-        public async Task<ActionResult<UserDto>> GetUser(string email)
+        [HttpPost("email")]
+        public async Task<UserDto> GetUserByEmail([FromBody]EmailRequest email)
         {
-            return await Mediator.Send(new GetUserByEmail.Query { Email = email });
+            return await Mediator.Send(new GetUserByEmail.Query { email = email });
         }
         [HttpPost]
         public async Task<string> CreateUser(UserDto user)

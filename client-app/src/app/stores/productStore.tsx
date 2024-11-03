@@ -25,26 +25,28 @@ export default class ProductStore {
         this.setLoading(true);
         try {
             this.setProducts(await agent.Products.productList());
-            this.setLoading(false);
         }
-        catch {
-            console.error("Error loading products",Error);
+        catch (error){
+            console.error("Error loading products",error);
+        }
+        finally{
             this.setLoading(false);
         }
     }
 
     loadProduct = async (id: string) => {
         this.setLoading(true);
-        try {    
+        try {
             const product = await agent.Products.details(id);
-            runInAction(() => { 
-                this.setLoading(false);
-                this.setProducts([...this.products.filter(x=>x.id!==id), product])
+            runInAction(() => {
+                this.setProducts([...this.products.filter(x => x.id !== id), product])
             })
-        }     
-        catch {
-            console.log("Error loading product");
-            this.setLoading(true);
+        }
+        catch (error) {
+            console.log("Error loading product", error);
+        }
+        finally {
+            this.setLoading(false);
         }
     }
 
@@ -52,13 +54,14 @@ export default class ProductStore {
         this.setLoading(true);
         try {
             await agent.Products.create(product);
-            runInAction(() => { 
+            runInAction(() => {
                 this.setProducts([...this.products, product]);
-                this.setLoading(false);
             })
         }
-        catch {
-            console.error("Error creating product", Error);
+        catch(error) {
+            console.error("Error creating product", error);
+        }
+        finally {
             this.setLoading(false);
         }
     }
@@ -68,13 +71,14 @@ export default class ProductStore {
         try {
             await agent.Products.update(product);
             runInAction(() => {
-            this.setProducts([...this.products.filter(x => x.id !== product.id), product]);
-            this.setLoading(true);
+                this.setProducts([...this.products.filter(x => x.id !== product.id), product]);
             })
         }
-        catch {
-            console.error("Error updating product", Error);
-            this.setLoading(false);
+        catch(error) {
+            console.error("Error updating product", error);
+        }
+        finally {
+            this.setLoading(true);
         }
     }
 
@@ -84,11 +88,12 @@ export default class ProductStore {
             await agent.Products.delete(id);
             runInAction(() => {
                 this.setProducts([...this.products.filter(x => x.id !== id)]);
-                this.setLoading(false);
             })
         }
-        catch {
-            console.error("Error deleting product", Error);
+        catch (error) {
+            console.error("Error deleting product", error);
+        }
+        finally {
             this.setLoading(false);
         }
     }
