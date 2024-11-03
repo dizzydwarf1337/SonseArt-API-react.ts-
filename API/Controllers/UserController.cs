@@ -19,9 +19,9 @@ namespace API.Controllers
             return await Mediator.Send(new GetUserByEmail.Query { Email = email });
         }
         [HttpPost]
-        public async void CreateUser(UserDto user, string password)
+        public async Task<string> CreateUser(UserDto user)
         {
-            await Mediator.Send(new Create.Command { User = user, Password= password});
+            return await Mediator.Send(new Create.Command { User = user});
         }
         [HttpPut("{id}")]
         public async void UpdateUser(Guid id, UserDto user)

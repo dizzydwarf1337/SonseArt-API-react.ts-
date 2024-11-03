@@ -28,16 +28,23 @@ public class AuthService
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]);
+        var userRoles = await _userManager.GetRolesAsync(user);
         var tokenDescriptor = new SecurityTokenDescriptor
+
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
             }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
+        foreach (var role in userRoles)
+        {
+            tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role));
+        }
+
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

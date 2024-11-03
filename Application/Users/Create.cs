@@ -14,12 +14,11 @@ namespace Application.Users
 {
     public class Create
     {
-        public class Command : IRequest
+        public class Command : IRequest<string>
         {
             public UserDto User { get; set; }
-            public string Password { get; set; }
         }
-        public class Hanlder : IRequestHandler<Command>
+        public class Hanlder : IRequestHandler<Command,string>
         {
             private readonly IUserRepository _userRepository;
             private readonly UserManager<User> _userManager;
@@ -29,9 +28,9 @@ namespace Application.Users
                 _userManager = userManager;
             }
 
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<string> Handle(Command request, CancellationToken cancellationToken)
             {
-                await _userRepository.CreateUser(request.User, request.User.Password);
+                return await _userRepository.CreateUser(request.User);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace Persistence.Repositories
             _context = context;
 
         }
-        public async Task CreateUser(UserDto user, string password)
+        public async Task<string> CreateUser(UserDto user)
         {
             var User = new User
             {
@@ -33,13 +33,20 @@ namespace Persistence.Repositories
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
+                House= user.House,
                 NormalizedEmail = user.Email.ToUpper(),
                 NormalizedUserName = user.Email.ToUpper(),
                 UserName = user.Email
             };
-            await _userManager.CreateAsync(User, password);
-            await _context.Users.AddAsync(User);
-
+            
+            var result =  await _userManager.CreateAsync(User, user.Password);
+            await _userManager.AddToRoleAsync(User, "User");
+            if (!result.Succeeded)
+            {
+                return $"User creation failed: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+            }
+            await _context.SaveChangesAsync();
+            return "User Created Successfully";
         }
 
         public async Task DeleteUser(Guid id)

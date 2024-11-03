@@ -1,5 +1,6 @@
 ﻿using Application.Products;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace API.Controllers
 {
     public class ProductController : BaseAPIController
     {
+        
         [HttpGet]
         public async Task<IEnumerable<Product>> GetProducts()
         {

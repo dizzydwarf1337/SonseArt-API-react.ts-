@@ -1,11 +1,13 @@
 ﻿using Application.Comments;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
     public class CommentController : BaseAPIController
     {
         [HttpPost]
