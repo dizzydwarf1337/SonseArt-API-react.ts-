@@ -50,12 +50,12 @@ const Comments = {
 };
 const Auth = {
     login: (loginModel: LoginModel, noAuth = false) => requests.post<LoginModel>('/auth/login', loginModel, noAuth),
-    logout: (email: string) => requests.post<void>('/auth/logout', { email }),
+    logout: (email: string, noAuth = false) => requests.post<void>('/auth/logout', { email }, noAuth),
 };
 const Users = {
     getUserById: (id: string, noAuth = false) => requests.get<User>(`/user/${id}`, noAuth),
     getUserByEmail: (email: string) => requests.post<User>('/user/email/', { email }),
-    createUser: (user: User) => requests.post<string>('/user', user),
+    createUser: (user: User) => requests.post<LoginModel>('/user', user),
     updateUser: (user: User) => requests.put<void>(`/user/${user.id}`, user),
     changePassword: (id: string, password: string) => requests.put<void>(`/user/password/${id}`, password),
 }

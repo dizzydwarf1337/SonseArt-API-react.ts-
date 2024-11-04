@@ -1,4 +1,5 @@
 ﻿using Application.Dtos;
+using Application.Login;
 using Application.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,9 +21,10 @@ namespace API.Controllers
             return await Mediator.Send(new GetUserByEmail.Query { email = email });
         }
         [HttpPost]
-        public async Task<string> CreateUser(UserDto user)
+        public async Task<LoginDto> CreateUser(UserDto user)
         {
-            return await Mediator.Send(new Create.Command { User = user});
+            await Mediator.Send(new Create.Query { User = user});
+            return await Mediator.Send(new Login.Command { LoginDto = new LoginDto { Email = user.Email, Password = user.Password } });
         }
         [HttpPut("{id}")]
         public async void UpdateUser(Guid id, UserDto user)

@@ -1,7 +1,7 @@
-import { Button, Grid2, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { useStore } from "../../../app/stores/defaultStore";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Form, useNavigate, useParams } from "react-router-dom";
 import { Product } from "../../../app/models/product";
 import { v4 as uuidv4 } from 'uuid';
 import "../styles.css";
@@ -67,19 +67,11 @@ export default function ProductCreate() {
 
     return (
         <>
-            <Grid2 container sx={{
-                mt:"20px",
-                mb: "20px",
-                width: "400px",
-                height: "500px",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#727548",
-                borderRadius: "20px",
-                boxShadow: "0px 0px 10px 10px #D4D8C5"
-            }}>
-                <Typography variant="h4" color="#D4D8C5">Create Product</Typography>
-                <form onSubmit={handleSubmit}
+            <Box width="100%" height="100%" display="flex" flexDirection="row" m="5px">
+                <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center"
+                    sx={{ bgcolor: "primary.main", borderRadius: "20px", p: "20px 20px", m: "30px 20px", gap: "20px" }}>
+                <Typography variant="h4">Create Product</Typography>
+                <Form onSubmit={handleSubmit}
                     style={{
                     display: "flex", flexDirection: "column", width: "100%", maxWidth: "400px", alignItems: "center", color: "#D4D8C5",
                     fontSize:"20px"
@@ -94,9 +86,10 @@ export default function ProductCreate() {
                     <TextField type="number" onChange={handleInputChange} value={productData.price} placeholder="Price" name="price" />
                     <label>Product photo:</label>
                     <TextField type="file" onChange={handleFileChange} name="imageFile" />
-                    <Button sx={{ backgroundColor: "#D4D8C5", mt: "5px", color:"#727548"}} type="submit">Submit</Button>
-                </form>
-            </Grid2>
+                    <Button variant="contained" color="success" type="submit">Submit</Button>
+                </Form>
+                </Box>
+            </Box>
         </>
     )
 }

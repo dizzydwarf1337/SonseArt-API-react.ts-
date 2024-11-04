@@ -10,7 +10,7 @@ namespace Persistence.Identity
     {
         public Task<UserDto> GetUser(Guid id);
         public Task<UserDto> GetUserByEmail(string email);
-        public Task<string> CreateUser(UserDto user);
+        public Task<User> CreateUser(UserDto user);
         public Task UpdateUser(UserDto user, Guid id);
         public Task DeleteUser(Guid id);
         public Task ChangePassword (Guid id,  string newPassword);

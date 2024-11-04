@@ -23,30 +23,31 @@ namespace Persistence.Repositories
             _context = context;
 
         }
-        public async Task<string> CreateUser(UserDto user)
+        public async Task<User> CreateUser(UserDto user)
         {
             var User = new User
             {
+                Id = Guid.NewGuid(),
                 City = user.City,
                 Street = user.Street,
                 ZipCode = user.ZipCode,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                House= user.House,
+                House = user.House,
                 NormalizedEmail = user.Email.ToUpper(),
                 NormalizedUserName = user.Email.ToUpper(),
                 UserName = user.Email
             };
-            
-            var result =  await _userManager.CreateAsync(User, user.Password);
+
+            var result = await _userManager.CreateAsync(User, user.Password);
             await _userManager.AddToRoleAsync(User, "User");
             if (!result.Succeeded)
             {
-                return $"User creation failed: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+                return null;
             }
             await _context.SaveChangesAsync();
-            return "User Created Successfully";
+            return User;
         }
 
         public async Task DeleteUser(Guid id)

@@ -14,21 +14,23 @@ namespace Application.Users
 {
     public class Create
     {
-        public class Command : IRequest<string>
+        public class Query : IRequest<User>
         {
             public UserDto User { get; set; }
         }
-        public class Hanlder : IRequestHandler<Command,string>
+        public class Hanlder : IRequestHandler<Query,User>
         {
             private readonly IUserRepository _userRepository;
             private readonly UserManager<User> _userManager;
-            public Hanlder(IUserRepository userRepository, UserManager<User> userManager)
+            private readonly AuthService _auth;   
+            public Hanlder(IUserRepository userRepository, UserManager<User> userManager,AuthService auth)
             {
                 _userRepository = userRepository;
                 _userManager = userManager;
+                _auth = auth;
             }
 
-            public async Task<string> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<User> Handle(Query request, CancellationToken cancellationToken)
             {
                 return await _userRepository.CreateUser(request.User);
             }
