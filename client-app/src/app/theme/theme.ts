@@ -7,7 +7,8 @@ const theme = createTheme({
             contrastText: '#FCF5E3', 
         },
         secondary: {
-            main: '#897557', 
+            main: '#f8edd0',
+            contrastText:"#234d20"
         },
         success: {
             main: "#B4DDA3",
@@ -39,7 +40,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     textDecoration: 'none',
-                    color: '#D4D8C5',
+                    color: '#FCF5E3',
                 },
             },
         },

@@ -41,6 +41,7 @@ export default class ProductStore {
             runInAction(() => {
                 this.setProducts([...this.products.filter(x => x.id !== id), product])
             })
+            return product;
         }
         catch (error) {
             console.log("Error loading product", error);

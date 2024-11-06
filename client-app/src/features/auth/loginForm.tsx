@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, Divider, FormHelperText } from "@mui/material";
+import { Box, Button, TextField, Typography, Divider, FormHelperText, CircularProgress } from "@mui/material";
 
 import { useStore } from "../../app/stores/defaultStore";
 import { useState } from "react";
@@ -90,7 +90,7 @@ export default observer ( function LoginForm() {
                         <FormHelperText id="component-error-text" sx={{ color: "White" }}>{error}</FormHelperText>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Button variant="contained" color="success" type="submit" sx={{ borderRadius: "10px" }}>Submit</Button>
+                        <Button variant="contained" color="success" type="submit" disabled={userStore.getLoading()} startIcon={userStore.getLoading() ? <CircularProgress size={20} /> : null} sx={{ borderRadius: "10px" }}>Submit</Button>
                     </Box>
                 </Form>
             </Box>
