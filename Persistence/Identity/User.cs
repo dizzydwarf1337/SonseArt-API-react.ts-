@@ -16,6 +16,8 @@ namespace Persistence.Identity
         public string House { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public Guid CartId { get; set; }
+        public virtual Cart Cart { get; set; }
         public List<Comment> comments { get; set; }
     }
 }

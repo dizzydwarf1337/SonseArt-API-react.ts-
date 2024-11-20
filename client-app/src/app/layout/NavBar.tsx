@@ -1,15 +1,27 @@
-import { AppBar, Box, Button, CircularProgress, Toolbar, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { AppBar, Box, Button, CircularProgress, IconButton, Menu, MenuItem, MenuList, Toolbar, Typography } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../stores/defaultStore';
 import { observer } from 'mobx-react-lite';
 import agent from '../API/agent';
 import { LoadingButton } from '@mui/lab';
 import { useState } from 'react';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import DefaultSnackBar from './DefaultSnackBar';
+import CloseIcon from '@mui/icons-material/Close';
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 
 export default observer(function NavBar() {
-    const { userStore } = useStore();
+    const { userStore,productStore } = useStore();
     const [openSnack, setOpenSnack] = useState(false);
+    const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleMenuOpen = (event) => {
+            setAnchorEl(event.currentTarget)
+    }
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    }
 
     const handleOnClick = async () => {
         try {
@@ -61,6 +73,33 @@ export default observer(function NavBar() {
                                     <Typography className="navLink" variant="subtitle1" component="a" href="/profile">
                                         Profile
                                     </Typography>
+                                    <IconButton onClick={handleMenuOpen}>
+                                        <FavoriteBorderIcon sx={{ color: "secondary.main", position: "relative" }} />
+                                        {userStore.favProducts.length > 0 ? (
+                                            <Box
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: "50%",
+                                                    right: 0,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: "#F0386B",
+                                                    width: 15,
+                                                    height: 15,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontSize: "10px",
+                                                    color: "white",
+                                                    fontWeight: "bold"
+                                                }}
+                                            >
+                                                {userStore.favProducts.length}
+                                            </Box>
+                                        ) : (null)}
+                                    </IconButton>
+                                    <IconButton sx={{color:"secondary.main"} }>
+                                        <LocalMallOutlinedIcon />
+                                    </IconButton>
                                     <LoadingButton
                                         onClick={handleOnClick}
                                         className="navLink"
@@ -94,6 +133,45 @@ export default observer(function NavBar() {
                 message="You have successfully logged out"
                 severity="success"
             />
+            <Menu open={open} onClose={handleCloseMenu} anchorEl={anchorEl}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}
+                transformOrigin={{ vertical: 'top', horizontal: 'center'}}
+            >
+                {userStore.favProducts.length === 0 ? <Typography variant="h6" color="primary.main" p="5px">No favourite products</Typography> : (
+                <Box>
+                <MenuList sx={{ width: "100%", height: "100%", p:"0px"}}>
+                    <Typography variant="h6" sx={{ textAlign: "center", color: "primary.main", mb:"10px"}}>Favourite Products</Typography>
+                    {userStore.favProducts.map((product) => (
+                        <MenuItem sx={{ borderRadius: "1px", border: "solid black", borderWidth: "0.5px 0px 0px 0px", width:"275px"}} key={product.id}
+                            onClick={() => { navigate(`/product/${product.id}`); productStore.setSelectedProduct(product); }}
+                        >
+                        <Box display="flex" flexDirection="row" alignItems="center" gap="10px" >
+                            <Box display="flex" borderRadius="50%" >
+                                    <img src={`/public/${product.image}`} width="50px" height="50px" style={{ borderRadius: "50%", imageResolution: "from-image", objectFit:"cover" }}/>
+                            </Box>
+                            <Box display="flex" flexDirection="column">
+                                <Typography color="primary.main" variant="subtitle1">{product.name}</Typography>
+                                <Typography color="primary.main" variant="subtitle2">{product.price}</Typography>
+                                </Box>
+                                <Box position="absolute" right="0px" top="15px">
+                                    <IconButton onClick={(e) => { e.stopPropagation(); userStore.removeFavProduct(product); }} sx={{
+                                    zIndex: "200",
+
+                                }}>
+                                    <CloseIcon sx={{ color: "red" }} />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                </MenuItem>
+                    ))}
+                        </MenuList>
+                        <Box alignItems="center" justifyContent="center" display="flex" pt="10px" width="100%" sx={{ border:"solid black",borderWidth: "1px 0px 0px 0px"}}>
+                            <Button variant="contained" color="warning" onClick={() => { userStore.setFavProducts([]); }}>Delete All</Button>
+                        </Box>
+                </Box>
+                )}
+            </Menu>
+  
         </>
     );
 });

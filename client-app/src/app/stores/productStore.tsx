@@ -7,8 +7,13 @@ export default class ProductStore {
         makeAutoObservable(this);
     }
 
+
+    selectedProduct : Product | undefined = undefined;
     products: Product[] = []; 
 
+    setSelectedProduct = (product: Product) => {
+            this.selectedProduct = product;
+    }
     private setProducts(products: Product[]) {
         this.products = products;
     }
@@ -29,27 +34,31 @@ export default class ProductStore {
         catch (error){
             console.error("Error loading products",error);
         }
-        finally{
+        finally {
             this.setLoading(false);
         }
     }
 
     loadProduct = async (id: string) => {
+        const existingProduct = this.products.find(x => x.id === id);
+        if (existingProduct) {
+            this.setSelectedProduct(existingProduct);
+            return existingProduct;
+        }
         this.setLoading(true);
         try {
             const product = await agent.Products.details(id);
             runInAction(() => {
-                this.setProducts([...this.products.filter(x => x.id !== id), product])
-            })
+                this.setProducts([...this.products, product]);
+                this.setSelectedProduct(product);
+            });
             return product;
-        }
-        catch (error) {
-            console.log("Error loading product", error);
-        }
-        finally {
+        } catch (error) {
+            console.error("Error loading product", error);
+        } finally {
             this.setLoading(false);
         }
-    }
+    };
 
     createProduct = async (product: Product) => {
         this.setLoading(true);

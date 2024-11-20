@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -25,6 +26,7 @@ namespace Persistence.Repositories
         }
         public async Task<User> CreateUser(UserDto user)
         {
+            Guid cartId = Guid.NewGuid();
             var User = new User
             {
                 Id = Guid.NewGuid(),
@@ -37,7 +39,9 @@ namespace Persistence.Repositories
                 House = user.House,
                 NormalizedEmail = user.Email.ToUpper(),
                 NormalizedUserName = user.Email.ToUpper(),
-                UserName = user.Email
+                UserName = user.Email,
+                Cart = new Cart { Id = cartId },
+                CartId = cartId,
             };
 
             var result = await _userManager.CreateAsync(User, user.Password);
@@ -53,9 +57,11 @@ namespace Persistence.Repositories
         public async Task DeleteUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            var cart = await _context.Carts.FirstOrDefaultAsync(x => x.Id == user.CartId);
+            if (user != null && cart!=null)
             {
                 _context.Users.Remove(user);
+                _context.Carts.Remove(cart);
                 await _context.SaveChangesAsync();
             }
         }

@@ -18,6 +18,7 @@ namespace Persistence.Identity
         public string LastName { get; set; }
         public string? Role { get; set; }
         public string? Password { get; set; }
+        public Guid CartId { get; set; }
         public UserDto(){}
         public UserDto(User user)
         {

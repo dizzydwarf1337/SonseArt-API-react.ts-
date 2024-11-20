@@ -3,20 +3,24 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#4D6956', 
-            contrastText: '#FCF5E3', 
+            main: '#4D6956',
+            contrastText: '#FCF5E3',
         },
         secondary: {
             main: '#f8edd0',
-            contrastText:"#234d20"
+            contrastText: "#234d20"
         },
         success: {
             main: "#B4DDA3",
             contrastText: "#FFFFF"
         },
         background: {
-            default: '#F8EDD0', 
+            default: '#F8EDD0',
         },
+        warning: {
+            main: "#FF5D70",
+            contrastText: "white"
+        }
     },
     typography: {
         fontFamily: 'Arial, sans-serif',
@@ -34,6 +38,10 @@ const theme = createTheme({
             fontSize: '1rem',
             color: '#4a4a4a',
         },
+        subtitle1: {
+            fontSize: '1rem',
+            color: 'black',
+        }
     },
     components: {
         MuiTypography: {
@@ -67,6 +75,14 @@ const theme = createTheme({
                         transition: "0.5s"
                     },
                 },
+                containedWarning: {
+                    backgroundColor: 'warning',
+                    boxShadow: "none",
+                    '&:hover': {
+                        backgroundColor: "#FF3B52",
+                        transition:"0.5s",
+                    }
+                }
             },
         },
         MuiAppBar: {

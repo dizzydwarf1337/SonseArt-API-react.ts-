@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ApplicationContext>
 builder.Services.AddScoped<IProductRepository, ProductRepo>();
 builder.Services.AddScoped<ICommentRepository, CommentRepo>();
 builder.Services.AddScoped<IUserRepository, UserRepo>();
+builder.Services.AddScoped<ICartRepository, CartRepo>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Products.Create.Command).Assembly));
 builder.Services.AddCors(opt =>

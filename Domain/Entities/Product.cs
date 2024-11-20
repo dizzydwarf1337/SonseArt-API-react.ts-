@@ -15,7 +15,7 @@ namespace Domain.Entities
         public string FullDescription { get; set; }
         public string ShortDescription { get; set; }
         public string? Image { get; set; }
-        [NotMapped]
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<CartProduct> CartProducts { get; set; }
     }
 }

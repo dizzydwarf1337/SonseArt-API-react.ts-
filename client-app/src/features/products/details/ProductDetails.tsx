@@ -1,5 +1,4 @@
 import  { useEffect, useState } from 'react';
-import { Product } from '../../../app/models/product';
 import { Link, useParams } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
@@ -7,33 +6,35 @@ import "../styles.css";
 import CommentDashboard from './commentDashboard';
 import CommentCreate from './CommentCreate';
 import { useStore } from '../../../app/stores/defaultStore';
+import { Product } from '../../../app/models/product';
 
 export default function ProductDetails() {
     const { id } = useParams<{ id: string }>();
-    const [product, setProduct] = useState<Product | undefined>();
     const { productStore } = useStore();
+    const { loadProduct, loading } = productStore;
     const { userStore } = useStore();
+    const [product, setProduct] = useState<Product>();
 
     useEffect(() => {
         if (id) {
             try {
-                if (productStore.products.length == 0) {
-                    productStore.loadProduct(id).then(() => { setProduct(productStore.products.find(x => x.id === id)); })
-                    console.log("Product loaded from API");
-                }
-                else if (productStore.products.find(x => x.id === id)) {
+                if (productStore.products.find(x => x.id === id)) {
                     setProduct(productStore.products.find(x => x.id === id));
                     console.log("Product found in store");
                 }
-                else console.log("Product Not Found");
+                else {
+                    loadProduct(id).then(() => { setProduct(productStore.products.find(x => x.id === id)); }).catch(error => console.log(error));
+                    console.log(productStore.selectedProduct);
+                    console.log("Product loaded from API");
+                }
             }
             catch {
                 console.error("Error while setting product");
             }
         }
-    }, [id])
+    }, [id]);
 
-    if (productStore.loading || !product) return (<LoadingComponent />);
+    if (loading || !product) return (<LoadingComponent />);
 
     return (
         <>

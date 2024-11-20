@@ -86,7 +86,7 @@ export default function ProductCreate() {
                     <TextField type="number" onChange={handleInputChange} value={productData.price} placeholder="Price" name="price" />
                     <label>Product photo:</label>
                     <TextField type="file" onChange={handleFileChange} name="imageFile" />
-                    <Button variant="contained" color="success" type="submit">Submit</Button>
+                        <Button variant="contained" color="primary" type="submit" sx={{mt:"20px"} }>Submit</Button>
                 </Form>
                 </Box>
             </Box>

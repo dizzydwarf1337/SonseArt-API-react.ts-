@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Identity;
+using System.Reflection.Emit;
 namespace Persistence.Database
 {
     public class ApplicationContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
@@ -12,7 +13,11 @@ namespace Persistence.Database
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            builder.Entity<CartProduct>(entity =>
+            {
+                entity.HasKey(cp => new { cp.ProductId, cp.CartId });
+            });
+                base.OnModelCreating(builder);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,5 +29,7 @@ namespace Persistence.Database
         public ApplicationContext() : base() { }
         public DbSet<Product> Products { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartProduct> CartProducts { get; set; }
     }
 }

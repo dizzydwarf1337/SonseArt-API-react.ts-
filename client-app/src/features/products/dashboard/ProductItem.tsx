@@ -5,18 +5,37 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../../app/stores/defaultStore';
+import { useState } from 'react';
 
 interface Props {
     product: Product;
 }
 export default function ProductItem({ product }: Props) {
     const navigate = useNavigate();
-    const { productStore } = useStore();
-    const user = useStore().userStore.getUser();
+    const { productStore, userStore } = useStore();
+    const user = userStore.getUser();
     const role = user ? user.role : null;
     const isAdmin = role === "Admin";
     async function handleDelete(){
         await productStore.deleteProduct(product.id);
+    }
+
+    const [isFavProduct, setIsFavProduct] = useState<boolean>(
+        userStore.favProducts.some(favProduct => favProduct.id === product.id)
+    );
+
+    const handleAddFavItem =  (event) => {
+        event.stopPropagation();
+        if (!userStore.getLoggedIn()) return navigate("/login");
+        if (isFavProduct) {
+            userStore.removeFavProduct(product);
+            setIsFavProduct(false);
+        }
+        else {
+            userStore.addFavProduct(product);
+            setIsFavProduct(true);
+        }
+
     }
     return (
         <>
@@ -28,8 +47,9 @@ export default function ProductItem({ product }: Props) {
                 backgroundPosition: "center",
                 textShadow: "1px 1px 2px #C9A63A, 0 0 9px #6B8E23, 0 0 10px #C9A63A",
                 cursor: "pointer",
-                position: "relative"}}
-                onClick={() => navigate(`/product/${product.id}`)}>
+                position: "relative"
+            }}
+                onClick={() => { navigate(`/product/${product.id}`); productStore.setSelectedProduct(product); }}>
 
                 <CardHeader
                     title={product.name}
@@ -51,12 +71,12 @@ export default function ProductItem({ product }: Props) {
                     <Typography component="p" variant="subtitle2">{product.price}</Typography>
                     <Typography component="p" variant="subtitle1" >{product.shortDescription}</Typography>
                 </CardContent>
-                <CardActions  sx={{ position: 'relative',top:"140px", left:"190px"}}>
-                    <IconButton aria-label="favorite" onClick={ (e)=> e.stopPropagation()} sx={{ color: "white", boxShadow: "0px 0px 10px 5px #FFFFD8" } }>
-                        <FavoriteIcon />
+                <CardActions sx={{ position: 'relative', top: "140px", left: "190px" }}>
+                    <IconButton aria-label="favorite" onClick={handleAddFavItem} sx={{ color: "white", boxShadow: isFavProduct ? "0px 0px 10px 2px pink" : "0px 0px 10px 2px #FFFFD8" }}>
+                        <FavoriteIcon sx={{ color: isFavProduct ? "#F0386B" : "white" }} />
                     </IconButton>
-                    <IconButton onClick={(e) => e.stopPropagation()} sx={{ color: "white", boxShadow: "0px 0px 10px 5px #FFFFD8" }}>
-                        <AddShoppingCartIcon />
+                    <IconButton onClick={(e) => e.stopPropagation()} sx={{ color: "white", boxShadow: "0px 0px 10px 5px #FFFFD8"  }}>
+                        <AddShoppingCartIcon  />
                     </IconButton>
                 </CardActions>
                 </Card>
