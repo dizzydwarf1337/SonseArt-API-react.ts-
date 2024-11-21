@@ -11,12 +11,14 @@ export default class UserStore {
         const userData = localStorage.getItem("user");
         const tokenValue = localStorage.getItem("token"); 
         const favProducts = localStorage.getItem("favProducts");
+        const cartProducts = localStorage.getItem("cartProducts");
         this.setLoggedIn(loggedIn);
         if (userData) {
             runInAction(() => { 
             this.setUser(JSON.parse(userData));
             this.setToken(tokenValue);
-            this.setFavProducts(JSON.parse(favProducts));
+            this.setFavProducts(JSON.parse(favProducts) ?? []);
+            this.cartProducts =(JSON.parse(cartProducts) ?? []);
             })
          }
     }
@@ -25,6 +27,7 @@ export default class UserStore {
     isLoggedIn: boolean = false;
     loading: boolean = false;
     favProducts: Product[] = [];
+    cartProducts: Product[] = [];
 
     setToken = (token: string | null) => {
         this.token= token;
@@ -47,9 +50,30 @@ export default class UserStore {
     }
     getLoggedIn = () => this.isLoggedIn;
 
+    setCartProducts = (products: Product[]) => {
+        this.cartProducts = products;
+        localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
+    }
+
+    getCartProducts = () => this.cartProducts;
+
+    addCartProduct = (product: Product) => {
+        this.cartProducts.push(product);
+        localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
+    }
+    removeCartProduct = (product: Product) => {
+        this.cartProducts = this.cartProducts.filter(x => x.id !== product.id);
+        localStorage.removeItem("cartProducts");
+        localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
+    }
+    removeCartProducts = () => {
+        this.cartProducts = [];
+        localStorage.removeItem("cartProducts");
+    }
+
     addFavProduct = (product: Product) => {
             this.favProducts.push(product);
-            localStorage.setItem("favProducts", JSON.stringify(this.favProducts));
+        localStorage.setItem("favProducts", JSON.stringify(this.favProducts));
     }
     removeFavProduct = (product: Product) => {
             this.favProducts = this.favProducts.filter(x => x.id !== product.id);

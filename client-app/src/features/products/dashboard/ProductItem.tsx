@@ -21,7 +21,10 @@ export default function ProductItem({ product }: Props) {
     }
 
     const [isFavProduct, setIsFavProduct] = useState<boolean>(
-        userStore.favProducts.some(favProduct => favProduct.id === product.id)
+        userStore.favProducts?.some(favProduct => favProduct.id === product.id)
+    );
+    const [isProductInCart, setIsProductInCart] = useState<boolean>(
+        userStore.cartProducts?.some(cartProduct => cartProduct.id === product.id)
     );
 
     const handleAddFavItem =  (event) => {
@@ -36,6 +39,18 @@ export default function ProductItem({ product }: Props) {
             setIsFavProduct(true);
         }
 
+    }
+    const handleAddToCart = (event) => {
+        event.stopPropagation();
+        if (!userStore.getLoggedIn()) return navigate("/login");
+        if (isProductInCart) {
+            userStore.removeCartProduct(product);
+            setIsProductInCart(false);
+        }
+        else {
+            userStore.addCartProduct(product);
+            setIsProductInCart(true);
+        }
     }
     return (
         <>
@@ -75,8 +90,8 @@ export default function ProductItem({ product }: Props) {
                     <IconButton aria-label="favorite" onClick={handleAddFavItem} sx={{ color: "white", boxShadow: isFavProduct ? "0px 0px 10px 2px pink" : "0px 0px 10px 2px #FFFFD8" }}>
                         <FavoriteIcon sx={{ color: isFavProduct ? "#F0386B" : "white" }} />
                     </IconButton>
-                    <IconButton onClick={(e) => e.stopPropagation()} sx={{ color: "white", boxShadow: "0px 0px 10px 5px #FFFFD8"  }}>
-                        <AddShoppingCartIcon  />
+                    <IconButton onClick={handleAddToCart} sx={{ color: "white", boxShadow: "0px 0px 10px 5px #FFFFD8" }}>
+                        <AddShoppingCartIcon sx={{ color: isProductInCart ? "#0E9B09" : "white" }} />
                     </IconButton>
                 </CardActions>
                 </Card>

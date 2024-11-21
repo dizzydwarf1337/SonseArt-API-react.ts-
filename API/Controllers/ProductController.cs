@@ -9,37 +9,37 @@ namespace API.Controllers
     public class ProductController : BaseAPIController
     {
         [HttpGet]
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
-            return await Mediator.Send(new ProductList.Query());
+            return HandleRequest(await Mediator.Send(new ProductList.Query()));
         }
         [HttpGet("{id}")]
-        public async Task<Product> GetProduct(Guid id)
+        public async Task<IActionResult> GetProduct(Guid id)
         {
-            return await Mediator.Send(new GetProduct.Query { Id = id });
+            return HandleRequest(await Mediator.Send(new GetProduct.Query { Id = id }));
         }
         [HttpPost]
-        public async Task CreateProduct(Product product)
+        public async Task<IActionResult> CreateProduct(Product product)
         {
-            await Mediator.Send(new Create.Command { product = product });
+            return HandleRequest(await Mediator.Send(new Create.Command { product = product }));
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task DeleteProduct (Guid Id)
+        public async Task<IActionResult> DeleteProduct (Guid Id)
         {
-            await Mediator.Send(new Delete.Command { Id = Id });
+            return HandleRequest(await Mediator.Send(new Delete.Command { Id = Id }));
         }
         [Authorize(Roles="Admin")]
         [HttpPut("{id}")]
-        public async Task UpdateProduct(Guid id, Product product)
+        public async Task<IActionResult> UpdateProduct(Guid id, Product product)
         {
-            await Mediator.Send(new ProductUpdate.Command { Id = id, product = product });
+            return HandleRequest(await Mediator.Send(new ProductUpdate.Command { Id = id, product = product }));
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("{id}")]
-        public async Task UploadImage(Guid id, IFormFile? imageFile)
+        public async Task<IActionResult> UploadImage(Guid id, IFormFile? imageFile)
         {
-            await Mediator.Send(new UploadImage.Command { Id = id, ImageFile = imageFile });
+            return HandleRequest(await Mediator.Send(new UploadImage.Command { Id = id, ImageFile = imageFile }));
         }
     }
 }

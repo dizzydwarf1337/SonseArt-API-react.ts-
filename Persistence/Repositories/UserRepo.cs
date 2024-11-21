@@ -72,7 +72,7 @@ namespace Persistence.Repositories
             return new UserDto(user);
         }
 
-        public async Task<UserDto> GetUserByEmail(string email )
+        public async Task<UserDto> GetUserByEmail(string email)
         {
            var user= (await _context.Users.FirstOrDefaultAsync(x => x.Email == email));
            var userDto = new UserDto(user);

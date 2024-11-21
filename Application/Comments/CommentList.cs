@@ -11,30 +11,43 @@ namespace Application.Comments
 {
     public class CommentList
     {
-        public class Query : IRequest<List<CommentDto>>
+        public class Query : IRequest<ApiResponse<List<CommentDto>>>
         {
             public Guid ProductId { get; set; }
         }
-        public class Handler : IRequestHandler<Query, List<CommentDto>>
+        public class Handler : IRequestHandler<Query, ApiResponse<List<CommentDto>>>
         {
             private readonly ICommentRepository _commentRepository;
-            public Handler (ICommentRepository commentRepository)
+            public Handler(ICommentRepository commentRepository)
             {
                 _commentRepository = commentRepository;
             }
-            public async Task<List<CommentDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<List<CommentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var comments = await _commentRepository.GetComments(request.ProductId);
-                return comments.Select(c => new CommentDto
+                try
                 {
-                    Id = c.Id,
-                    Text =c.Text,
-                    CreatedAt = c.CreatedAt,
-                    ProductId = c.ProductId,
-                    Updated = c.Updated,
-                }).ToList();
-            }
-        }
+                    var comments = await _commentRepository.GetComments(request.ProductId);
 
+                    if (comments == null || !comments.Any())
+                        return ApiResponse<List<CommentDto>>.Failure("No comments found for the specified product.");
+
+                    var commentsDtos = comments.Select(c => new CommentDto
+                    {
+                        Id = c.Id,
+                        Text = c.Text,
+                        CreatedAt = c.CreatedAt,
+                        ProductId = c.ProductId,
+                        Updated = c.Updated,
+                    }).ToList();
+
+                    return ApiResponse<List<CommentDto>>.Success(commentsDtos);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<List<CommentDto>>.Failure($"Error retrieving comments: {ex.Message}");
+                }
+            }
+
+        }
     }
 }

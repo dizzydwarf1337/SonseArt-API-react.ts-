@@ -14,28 +14,38 @@ namespace Application.Comments
     {
         
         
-        public class Command : IRequest
+        public class Command : IRequest<ApiResponse<Unit>>
         {
             public CommentDto Comment { get; set; }
         }
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command,ApiResponse<Unit>>
         {
             public readonly ICommentRepository _commentRepository;
             public Handler(ICommentRepository commentRepository)
             {
                 _commentRepository = commentRepository;
             }
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var comment = new Comment
+                try
                 {
-                    Id = request.Comment.Id,
-                    Text = request.Comment.Text,
-                    CreatedAt = request.Comment.CreatedAt,
-                    ProductId = request.Comment.ProductId,
-                    Updated = request.Comment.Updated,
-                };
-                await _commentRepository.CreateComment(comment);
+                    var comment = new Comment
+                    {
+                        Id = request.Comment.Id,
+                        Text = request.Comment.Text,
+                        CreatedAt = request.Comment.CreatedAt,
+                        ProductId = request.Comment.ProductId,
+                        Updated = request.Comment.Updated,
+                    };
+
+                    await _commentRepository.CreateComment(comment); 
+
+                    return ApiResponse<Unit>.Success(Unit.Value); 
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<Unit>.Failure($"Error while adding comment: {ex.Message}");
+                }
             }
         }
 

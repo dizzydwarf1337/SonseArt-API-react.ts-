@@ -16,6 +16,6 @@ namespace Domain.Entities
         public string ShortDescription { get; set; }
         public string? Image { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public virtual ICollection<CartProduct> CartProducts { get; set; }
+        public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
     }
 }

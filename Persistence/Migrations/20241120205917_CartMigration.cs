@@ -18,13 +18,6 @@ namespace Persistence.Migrations
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "CartId1",
-                table: "AspNetUsers",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
             migrationBuilder.CreateTable(
                 name: "Carts",
                 columns: table => new
@@ -68,9 +61,10 @@ namespace Persistence.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CartId1",
+                name: "IX_AspNetUsers_CartId",
                 table: "AspNetUsers",
-                column: "CartId1");
+                column: "CartId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartProducts_CartId",
@@ -78,9 +72,9 @@ namespace Persistence.Migrations
                 column: "CartId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Carts_CartId1",
+                name: "FK_AspNetUsers_Carts_CartId",
                 table: "AspNetUsers",
-                column: "CartId1",
+                column: "CartId",
                 principalTable: "Carts",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -98,7 +92,7 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Carts_CartId1",
+                name: "FK_AspNetUsers_Carts_CartId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropForeignKey(
@@ -116,15 +110,11 @@ namespace Persistence.Migrations
                 table: "Comments");
 
             migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_CartId1",
+                name: "IX_AspNetUsers_CartId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
                 name: "CartId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "CartId1",
                 table: "AspNetUsers");
         }
     }

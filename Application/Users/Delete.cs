@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Dtos;
+using MediatR;
 using Persistence.Identity;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,24 @@ namespace Application.Users
 {
     public class Delete
     {
-        public class Command : IRequest
+        public class Command : IRequest<ApiResponse<Unit>>
         {
             public Guid id { get; set; }
         }
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command,ApiResponse<Unit>>
         {
             private readonly IUserRepository _userRepo;
-            public Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                return _userRepo.DeleteUser(request.id);
+                try
+                {
+                    await _userRepo.DeleteUser(request.id);
+                    return ApiResponse<Unit>.Success(Unit.Value);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<Unit>.Failure($"Error while deleting an user: {ex.Message}");
+                }
             }
         }
     }

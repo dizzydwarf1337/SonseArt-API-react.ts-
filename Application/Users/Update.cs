@@ -11,17 +11,25 @@ namespace Application.Users
 {
     public class Update
     {
-        public class Command : IRequest
+        public class Command : IRequest<ApiResponse<Unit>>
         {
             public UserDto User { get; set; }
             public Guid Id { get; set; }
         }
-        public class Hanlder : IRequestHandler<Command>
+        public class Hanlder : IRequestHandler<Command, ApiResponse<Unit>>
         {
             private readonly IUserRepository _userRepo;
-            public Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                return _userRepo.UpdateUser(request.User, request.Id);
+                try
+                {
+                    await _userRepo.UpdateUser(request.User, request.Id);
+                    return ApiResponse<Unit>.Success(Unit.Value);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<Unit>.Failure($"Error while updating user: {ex.Message}");
+                }
             }
         }
     }

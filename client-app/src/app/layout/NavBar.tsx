@@ -75,7 +75,7 @@ export default observer(function NavBar() {
                                     </Typography>
                                     <IconButton onClick={handleMenuOpen}>
                                         <FavoriteBorderIcon sx={{ color: "secondary.main", position: "relative" }} />
-                                        {userStore.favProducts.length > 0 ? (
+                                        {userStore.favProducts.length>0 ? (
                                             <Box
                                                 sx={{
                                                     position: "absolute",
@@ -137,7 +137,7 @@ export default observer(function NavBar() {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}
                 transformOrigin={{ vertical: 'top', horizontal: 'center'}}
             >
-                {userStore.favProducts.length === 0 ? <Typography variant="h6" color="primary.main" p="5px">No favourite products</Typography> : (
+                {userStore.favProducts.length===0 ?(<Typography variant="h6" color="primary.main" p="5px">No favourite products</Typography>) : (
                 <Box>
                 <MenuList sx={{ width: "100%", height: "100%", p:"0px"}}>
                     <Typography variant="h6" sx={{ textAlign: "center", color: "primary.main", mb:"10px"}}>Favourite Products</Typography>

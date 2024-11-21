@@ -11,15 +11,15 @@ namespace API.Controllers
     {
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<LoginDto>> Login(LoginDto login)
+        public async Task<IActionResult> Login(LoginDto login)
         {
-            return await Mediator.Send(new Login.Command { LoginDto = login });
+            return HandleRequest(await Mediator.Send(new Login.Command { LoginDto = login }));
         }
         [Authorize]
         [HttpPost("logout")]
-        public async Task Logout(EmailRequest email)
+        public async Task<IActionResult> Logout(EmailRequest email)
         {
-            await Mediator.Send(new Logout.Command { email = email });
+            return HandleRequest(await Mediator.Send(new Logout.Command { email = email }));
         }
     }
 }

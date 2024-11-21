@@ -13,12 +13,18 @@ namespace Persistence.Database
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+            
             builder.Entity<CartProduct>(entity =>
             {
                 entity.HasKey(cp => new { cp.ProductId, cp.CartId });
             });
-                base.OnModelCreating(builder);
-        }
+            builder.Entity<User>()
+                .HasOne(u => u.Cart) 
+                .WithOne() 
+                .HasForeignKey<User>(u => u.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

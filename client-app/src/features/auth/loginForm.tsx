@@ -72,6 +72,7 @@ export default observer ( function LoginForm() {
                             sx={{ m: "20px", bgcolor: "#E9EBE1" }}
                             value={loginModel.email}
                             onChange={handleInputChange}
+                            autoComplete="email"
                         />
                     </Box>
                     <Box>
@@ -84,6 +85,7 @@ export default observer ( function LoginForm() {
                             sx={{ m: "20px", bgcolor: "#E9EBE1", textDecoration: "none", textDecorationColor:"black" }}
                             value={loginModel.password}
                             onChange={handleInputChange}
+                            autoComplete="current-password"
                         />
                     </Box>
                     <Box m="0px 22px 10px 22px" >

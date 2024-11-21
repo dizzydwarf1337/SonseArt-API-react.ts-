@@ -14,11 +14,11 @@ namespace Application.Login
 {
     public class Login
     {
-       public class Command : IRequest<LoginDto>
+       public class Command : IRequest<ApiResponse<LoginDto>>
         {
             public LoginDto LoginDto { get; set; }
         }
-        public class Handler : IRequestHandler<Command,LoginDto>
+        public class Handler : IRequestHandler<Command, ApiResponse<LoginDto>>
         {
             private readonly AuthService _authService;
 
@@ -27,14 +27,21 @@ namespace Application.Login
                 _authService = authService;
             }
 
-            public async Task<LoginDto> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<LoginDto>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var token = await _authService.Authenticate(request.LoginDto);
-                if (token == null)
+                try
                 {
-                    return null;
+                    var token = await _authService.Authenticate(request.LoginDto);
+                    if (token == null)
+                    {
+                        return ApiResponse<LoginDto>.Failure("Error while creating token");
+                    }
+                    return ApiResponse<LoginDto>.Success(new LoginDto { Email = request.LoginDto.Email, Token = token });
                 }
-                return new LoginDto { Email=request.LoginDto.Email, Token = token };
+                catch (Exception ex)
+                {
+                    return ApiResponse<LoginDto>.Failure($"Error while login: {ex.Message}");
+                }
             }
         }
     }

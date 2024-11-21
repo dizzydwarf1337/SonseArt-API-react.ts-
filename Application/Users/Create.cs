@@ -14,11 +14,11 @@ namespace Application.Users
 {
     public class Create
     {
-        public class Query : IRequest<User>
+        public class Query : IRequest<ApiResponse<User>>
         {
             public UserDto User { get; set; }
         }
-        public class Hanlder : IRequestHandler<Query,User>
+        public class Hanlder : IRequestHandler<Query,ApiResponse<User>>
         {
             private readonly IUserRepository _userRepository;
             private readonly UserManager<User> _userManager;
@@ -30,9 +30,17 @@ namespace Application.Users
                 _auth = auth;
             }
 
-            public async Task<User> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<User>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _userRepository.CreateUser(request.User);
+                try
+                {
+                    var data = await _userRepository.CreateUser(request.User);
+                    return ApiResponse<User>.Success(data);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<User>.Failure($"Error while creating an user: {ex.Message}");
+                }
             }
         }
     }

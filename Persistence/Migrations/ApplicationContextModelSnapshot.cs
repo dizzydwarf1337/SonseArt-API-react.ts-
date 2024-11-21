@@ -258,9 +258,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CartId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -331,7 +328,8 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId1");
+                    b.HasIndex("CartId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -432,8 +430,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Persistence.Identity.User", b =>
                 {
                     b.HasOne("Domain.Entities.Cart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId1")
+                        .WithOne()
+                        .HasForeignKey("Persistence.Identity.User", "CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

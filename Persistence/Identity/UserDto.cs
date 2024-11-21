@@ -30,6 +30,7 @@ namespace Persistence.Identity
             House = user.House;
             FirstName = user.FirstName;
             LastName = user.LastName;
+            CartId = user.CartId;
         }
     }
 }

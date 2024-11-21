@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Dtos;
+using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using System;
@@ -11,20 +12,28 @@ namespace Application.Carts
 {
     public class GetProducts
     {
-        public class Query : IRequest<List<Product>>
+        public class Query : IRequest<ApiResponse<List<Product>>>
         {
             public Guid cartId { get; set; }
         }
-        public class Handler : IRequestHandler<Query, List<Product>>
+        public class Handler : IRequestHandler<Query, ApiResponse<List<Product>>>
         {
             private ICartRepository _cartRepository;
             public Handler(ICartRepository cartRepository)
             {
                 _cartRepository = cartRepository;
             }
-            public async Task<List<Product>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<List<Product>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _cartRepository.GetProducts(request.cartId);
+                try
+                {
+                    var result = await _cartRepository.GetProducts(request.cartId);
+                    return ApiResponse<List<Product>>.Success(result);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<List<Product>>.Failure($"Error while getting products: {ex.Message}");
+                }
             }
         }
     }

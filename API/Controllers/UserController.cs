@@ -11,35 +11,35 @@ namespace API.Controllers
     public class UserController : BaseAPIController
     {
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUser(Guid id)
+        public async Task<IActionResult> GetUser(Guid id)
         {
-            return await Mediator.Send(new GetUserById.Query { Id = id });
+            return HandleRequest(await Mediator.Send(new GetUserById.Query { Id = id }));
         }
         [HttpPost("email")]
-        public async Task<UserDto> GetUserByEmail([FromBody]EmailRequest email)
+        public async Task<IActionResult> GetUserByEmail([FromBody]EmailRequest email)
         {
-            return await Mediator.Send(new GetUserByEmail.Query { email = email });
+            return HandleRequest(await Mediator.Send(new GetUserByEmail.Query { email = email }));
         }
         [HttpPost]
-        public async Task<LoginDto> CreateUser(UserDto user)
+        public async Task<IActionResult> CreateUser(UserDto user)
         {
             await Mediator.Send(new Create.Query { User = user});
-            return await Mediator.Send(new Login.Command { LoginDto = new LoginDto { Email = user.Email, Password = user.Password } });
+            return HandleRequest(await Mediator.Send(new Login.Command { LoginDto = new LoginDto { Email = user.Email, Password = user.Password } }));
         }
         [HttpPut("{id}")]
-        public async void UpdateUser(Guid id, UserDto user)
+        public async Task<IActionResult> UpdateUser(Guid id, UserDto user)
         {
-            await Mediator.Send(new Update.Command { Id = id, User = user });
+            return HandleRequest(await Mediator.Send(new Update.Command { Id = id, User = user }));
         }
         [HttpPut("/password/{id}")]
-        public async void ChangePassword(Guid id, [FromBody]string newPassword)
+        public async Task<IActionResult> ChangePassword(Guid id, [FromBody]string newPassword)
         {
-            await Mediator.Send(new ResetPassword.Command { Id = id, Password = newPassword });
+            return HandleRequest(await Mediator.Send(new ResetPassword.Command { Id = id, Password = newPassword }));
         }
         [HttpDelete("{id}")]
-        public async void DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            await Mediator.Send(new Delete.Command { id = id });
+            return HandleRequest(await Mediator.Send(new Delete.Command { id = id }));
         }
 
     }

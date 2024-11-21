@@ -10,4 +10,5 @@ export interface User {
     lastName: string;
     role: string;
     password?: string;
+    cartId: string;
 }

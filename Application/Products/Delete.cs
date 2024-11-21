@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Dtos;
+using Domain.Interfaces;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,20 +11,28 @@ namespace Application.Products
 {
     public class Delete
     {
-        public class Command : IRequest
+        public class Command : IRequest<ApiResponse<Unit>>
         {
             public Guid Id { get; set; }
         }
-        public class Hanlder : IRequestHandler<Command>
+        public class Hanlder : IRequestHandler<Command,ApiResponse<Unit>>
         {
             private readonly IProductRepository _productRepo;
             public Hanlder(IProductRepository productRepo)
             {
                 _productRepo = productRepo;
             }
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                await _productRepo.DeleteProduct(request.Id);
+                try
+                {
+                    await _productRepo.DeleteProduct(request.Id);
+                    return ApiResponse<Unit>.Success(Unit.Value);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<Unit>.Failure($"Error while deleting product: {ex.Message}");
+                }
             }
         }
     }

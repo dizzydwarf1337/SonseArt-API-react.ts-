@@ -11,20 +11,28 @@ namespace Application.Users
 {
     public class GetUserByEmail
     {
-        public class Query : IRequest<UserDto>
+        public class Query : IRequest<ApiResponse<UserDto>>
         {
             public EmailRequest email { get; set; }
         }
-        public class Handler : IRequestHandler<Query, UserDto>
+        public class Handler : IRequestHandler<Query, ApiResponse<UserDto>>
         {
             private readonly IUserRepository _userRepository;
             public Handler(IUserRepository userRepository)
             {
                 _userRepository = userRepository;
             }
-            public Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return _userRepository.GetUserByEmail(request.email.Email);
+                try
+                {
+                    var data = await _userRepository.GetUserByEmail(request.email.Email);
+                    return ApiResponse<UserDto>.Success(data);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse<UserDto>.Failure($"Error while getting user by email: {ex.Message}");
+                }
             }
         }
     }
